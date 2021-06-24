@@ -126,9 +126,9 @@ const editBookByIdHandler = (request, h) => {
 };
 const deleteBookByIdHandler = (request, h) => {
     const { id } = request.params;
-    const index = notes.findIndex((note) => note.id === id);
+    const index = books.findIndex((b) => b.id === id);
     if (index !== -1) {
-        notes.splice(index, 1);
+        books.splice(index, 1);
         const response = h.response({
             status: 'success',
             message: 'Buku berhasil dihapus',
