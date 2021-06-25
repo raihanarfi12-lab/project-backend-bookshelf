@@ -54,12 +54,26 @@ const addBookHandler = (request, h) => {
     response.code(500);
     return response;
 };
-const getAllBooksHandler = () => ({
-    status: 'success',
-    data: {
-        books,
-    },
-});
+const getAllBooksHandler = (request, h) => {
+    const { name } = request.query;
+    if (name === 'dicoding'.toLowerCase()) {
+        const dicodingBooks = books.filter((b) => b.name.toLowerCase() === 'dicoding'.toLowerCase());
+        const response = h.response({
+            status: 'success',
+            data: {
+                dicodingBooks,
+            },
+        });
+        response.code(200);
+        return response;
+    }
+    const response = h.response({
+        status: 'success',
+        data: {
+            books,
+        },
+    });
+};
 const getBookByIdHandler = (request, h) => {
     const { id } = request.params;
     const book = books.filter((b) => b.id === id)[0];
