@@ -54,26 +54,80 @@ const addBookHandler = (request, h) => {
     return response;
 };
 const getAllBooksHandler = (request, h) => {
-    const { name } = request.query;
-    if (name !== undefined) {
-        const queriedBooks = books.filter((b) => b.name.toLowerCase() === name.toLowerCase());
+    const { name, reading, finished } = request.query;
+    const queriedName = name !== undefined;
+    const queriedRead = reading!== undefined;
+    const queriedFinish = finished != undefined;
+    const bookResponse = (array) =>{
+        const getBookItems = array.map((b) => {
+            const {id, name, publisher} = b;
+            return {id, name, publisher};
+        });
+        return getBookItems;
+    };
+    if (queriedName) {
+        const queriedBooks = books.filter((b) => b.name.toLowerCase().includes(name.toLowerCase()));
         const response = h.response({
             status: 'success',
             data: {
-                books: queriedBooks,
+                books: bookResponse(queriedBooks),
             },
         });
         response.code(200);
         return response;
     };
-    const getBookItems = books.map((b) => {
-        const {id, name, publisher} = b;
-        return {id, name, publisher};
-    });
+    if (queriedRead) {
+        if (reading == 1) {
+            const readingBooks = books.filter((b)=> b.reading === true );
+            const response = h.response({
+                status: 'success',
+                data: {
+                    books: bookResponse(readingBooks),
+                },
+            });
+            response.code(200);
+            return response;
+        }
+        if (reading == 0) {
+            const unreadingBooks = books.filter((b)=> b.reading === false );
+            const response = h.response({
+                status: 'success',
+                data: {
+                    books: bookResponse(unreadingBooks),
+                },
+            });
+            response.code(200);
+            return response;
+        }
+    }
+    if (queriedFinish) {
+        if (finished == 1) {
+            const finishedBooks = books.filter((b)=> b.finished === true );
+            const response = h.response({
+                status: 'success',
+                data: {
+                    books: bookResponse(finishedBooks),
+                },
+            });
+            response.code(200);
+            return response;
+        }
+        if (finished == 0) {
+            const unfinishedBooks = books.filter((b)=> b.finished === false );
+            const response = h.response({
+                status: 'success',
+                data: {
+                    books: bookResponse(unfinishedBooks),
+                },
+            });
+            response.code(200);
+            return response;
+        }
+    }
     const response = h.response({
         status: 'success',
         data: {
-            books: getBookItems,
+            books: bookResponse(books),
         },
     });
     response.code(200);
